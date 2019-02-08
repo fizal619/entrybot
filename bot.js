@@ -10,7 +10,8 @@ const getAndSave = (url, name) => {
       console.log('trying to read stream.')
       resolve(stream(url).pipe(file));
     } catch (exception) {
-      console.log(exception)
+      console.log(exception);
+      resolve(null);
     }
   });
 }
@@ -33,14 +34,18 @@ client.on('voiceStateUpdate', async (old, nextChannel) => {
     const YTfileStream = await getAndSave('https://www.youtube.com/watch?v=-LGHwFanLX4', tmpName);
 
     if (YTfileStream) {
-      YTfileStream.on('close', (file)=> {
+      YTfileStream.on('close', (err)=> {
+        console.log(err);
         const dispatch = connection.playFile(`./${tmpName}.mp3`);
+        dispatch.setVolume(1);
         setTimeout(()=> {
           fs.unlinkSync(`./${tmpName}.mp3`);
           dispatch.end();
           newUserChannel.leave();
         }, 10000);
       });
+    } else {
+      newUserChannel.leave();
     }
 
 
