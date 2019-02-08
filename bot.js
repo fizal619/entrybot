@@ -26,7 +26,7 @@ client.on('voiceStateUpdate', async (old, nextChannel) => {
   let oldUserChannel = old.voiceChannel
 
 
-  if(oldUserChannel === undefined && newUserChannel !== undefined && nextChannel.user.id !== client.user.id) {
+  if(oldUserChannel === undefined && newUserChannel !== undefined && nextChannel.user.id !== client.user.id && nextChannel.user.username === 'fizal619') {
     console.log(nextChannel.user.username, 'joined.');
 
     const connection = await newUserChannel.join();
