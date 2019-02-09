@@ -1,0 +1,95 @@
+/* Code that does the work */
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,regular,italic,600,600italic,700,700italic,800,800italic);
+
+.div-one {
+  background:red;
+  width: 100vw;
+  height: 100vh;
+   background: url('https://media.giphy.com/media/etZn8y8XlSCOc/giphy.gif');
+  width: 100vw;
+  height: 100vh;
+  background-repeat:no-repeat;
+  background-size:cover;
+  background-position:center;
+}
+
+.div-two {
+  -webkit-clip-path: polygon(100vw 0, 0% 100%, 100vw 100vh);
+  clip-path: polygon(100vw 0, 0% 100vh, 100vw 100vh);
+  background: url('https://media1.tenor.com/images/64401c250cfee3f6121aec0947e9aa9a/tenor.gif?itemid=7786109');
+  width: 100vw;
+  height: 100vh;
+  background-repeat:no-repeat;
+  background-size:cover;
+  background-position:bottom;
+}
+
+body {
+  margin: 0;
+}
+div {
+  position: absolute;
+}
+
+/* Decoration */
+
+.overlay {
+  width: 100vw;
+  height: 100vh;
+  background: rgba( 0, 0, 0, 0.3)
+}
+
+.box {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform:translate(-50%, -50%);
+  background: rgba( 0, 0, 0, 0.5);
+  text-align: center; color: rgba(250, 250, 250, 0.8);
+  border: 4px double rgba(250, 250, 250, 0.2);
+  padding: 10px;
+  text-align: center;
+}
+
+.box h1 {
+  font-size: 4vh;
+  padding: 0 1em;
+  font-family: Quicksand;
+}
+
+.box p {
+  padding: 0 1em;
+}
+
+.box img {
+  width: 150px;
+  border-radius: 50%;
+}
+
+body {
+  font-family: 'Open Sans';
+
+}
+
+.btn {
+  color: white;
+  padding: 10px 20px;
+  text-decoration: none;
+  background: #7288D5;
+  display: block;
+  border-radius: 3px;
+  transition: all .35s cubic-bezier(.25,.25,.315,1.35);
+  width: 50%;
+  margin: 0 auto;
+}
+
+.btn:hover {
+  transform: translateY(5px);
+}
+
+@media screen and (max-width: 600px) {
+  .box {
+    width: 90%;
+    top: 50%;
+  }
+}
