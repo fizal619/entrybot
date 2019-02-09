@@ -87,6 +87,10 @@ body {
   transform: translateY(5px);
 }
 
+a {
+  color: white;
+}
+
 @media screen and (max-width: 600px) {
   .box {
     width: 90%;
