@@ -87,7 +87,7 @@ client.on('voiceStateUpdate', async (old, nextChannel) => {
         dispatch.setVolume(0.2);
         setTimeout(()=> {
           dispatch.end();
-        }, 10000);
+        }, 12000);
 
         dispatch.on('end', () => newUserChannel.leave());
 
