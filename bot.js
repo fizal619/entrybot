@@ -74,11 +74,11 @@ client.on('voiceStateUpdate', async (old, nextChannel) => {
   try {
     if(oldUserChannel === undefined && newUserChannel !== undefined && nextChannel.user.id !== client.user.id) {
       console.log(nextChannel.user.username, 'joined.');
-      const connection = await newUserChannel.join();
       const tmpName = Date.now() + '';
       const res = await pool.query(`select * from users where uid=$1;`, [nextChannel.user.id]);
-
       if (res.rowCount === 0) return;
+
+      const connection = await newUserChannel.join();
 
       const YTfileStream = await getAndSave( res.rows[0].url, tmpName);
       if (YTfileStream) {
