@@ -1,14 +1,63 @@
+require('dotenv').config();
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const stream = require('youtube-audio-stream');
-const fs = require('fs');
+const { Pool } = require('pg');
+const connectionString = process.env.DB_URL;
+
+const pool = new Pool({ connectionString: connectionString });
+const {save_url, show_url} = require('./message_handlers');
+
+client.login(process.env.DISCORD_TOKEN);
+
+
+
+// Allow a user to mention bot and supply a url.
+// Messsage should have two words when trimmed and split.
+// second word should be a url.
+
+client.on('message', msg => {
+  console.log(msg);
+  try {
+    const messageArray = msg.content.split(' ');
+    console.log(messageArray);
+    if (messageArray[0] !== '+entry') return;
+
+    switch (messageArray[1]){
+      case 'save':
+        if (messageArray.length === 3) {
+          save_url(pool, msg.author.id + '', messageArray[2]).then(c=>{
+            msg.reply(c);
+          });
+        }
+        break;
+      case 'show':
+        show_url(pool, msg.author.id + '').then(c=>{
+          msg.reply(c);
+        });
+        break;
+      default:
+        msg.reply('*Commands:* \n\`+entry save <url>\`\n\`+entry show\`\n Please complain to fizal if I fuck up. ');
+    }
+  } catch (e) {
+    const channel = msg.guild.channels.find(ch => ch.name === 'entrybot-log');
+    // Do nothing if the channel wasn't found on this server
+    if (!channel) return;
+    // Send the message, mentioning the member
+    channel.send(`🚨*ERROR*🚨 \n \`\`\`${e}\`\`\` `);
+  }
+});
+
+
+client.on('ready', () => {
+  console.log(`Logged in as ${client.user.username}!`);
+});
 
 const getAndSave = (url, name) => {
   return new Promise(resolve => {
-    const file = fs.createWriteStream(`./${name}.mp3`);
     try {
       console.log('trying to read stream.')
-      resolve(stream(url).pipe(file));
+      resolve(stream(url));
     } catch (exception) {
       console.log(exception);
       resolve(null);
@@ -16,45 +65,43 @@ const getAndSave = (url, name) => {
   });
 }
 
-
-client.on('ready', () => {
-  console.log(`Logged in as ${client.user.username}!`);
-});
-
+// Play for a user if they now enter the voice channels.
+// Play only if someone has already asked entrybot to save their YT video.
 client.on('voiceStateUpdate', async (old, nextChannel) => {
   let newUserChannel = nextChannel.voiceChannel
   let oldUserChannel = old.voiceChannel
 
+  try {
+    if(oldUserChannel === undefined && newUserChannel !== undefined && nextChannel.user.id !== client.user.id) {
+      console.log(nextChannel.user.username, 'joined.');
+      const connection = await newUserChannel.join();
+      const tmpName = Date.now() + '';
+      const res = await pool.query(`select * from users where uid=$1;`, [nextChannel.user.id]);
 
-  if(oldUserChannel === undefined && newUserChannel !== undefined && nextChannel.user.id !== client.user.id && nextChannel.user.username === 'fizal619') {
-    console.log(nextChannel.user.username, 'joined.');
+      if (res.rowCount === 0) return;
 
-    const connection = await newUserChannel.join();
-    const tmpName = Date.now() + '';
-    const YTfileStream = await getAndSave('https://www.youtube.com/watch?v=-LGHwFanLX4', tmpName);
-
-    if (YTfileStream) {
-      YTfileStream.on('close', (err)=> {
-        console.log(err);
-        const dispatch = connection.playFile(`./${tmpName}.mp3`);
-        dispatch.setVolume(1);
+      const YTfileStream = await getAndSave( res.rows[0].url, tmpName);
+      if (YTfileStream) {
+        // console.log(err);
+        const dispatch = connection.playStream(YTfileStream);
+        dispatch.setVolume(0.2);
         setTimeout(()=> {
-          fs.unlinkSync(`./${tmpName}.mp3`);
           dispatch.end();
           newUserChannel.leave();
         }, 10000);
-      });
-    } else {
-      newUserChannel.leave();
+
+      } else {
+        newUserChannel.leave();
+      }
+    } else if(newUserChannel === undefined){
+      // User leaves a voice channel
     }
-
-
-
-  } else if(newUserChannel === undefined){
-
-    // User leaves a voice channel
-
+  } catch (e) {
+    const channel = nextChannel.guild.channels.find(ch => ch.name === 'entrybot-log');
+    // Do nothing if the channel wasn't found on this server
+    if (!channel) return;
+    // Send the message, mentioning the member
+    channel.send(`🚨*ERROR*🚨 \n \`\`\`${e}\`\`\` `);
   }
-});
 
-client.login('NTQzMzA3NjM4NjEyNTU3ODI0.Dz6qXQ.tHjzMLdro47pi517T9iORcAcoF0');
+});
