@@ -4,14 +4,19 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "./node_modules/.bin/concurrently npm:start-http npm:start-bot",
+    "start-http": "node server.js",
+    "start-bot": "node bot.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "concurrently": "^4.1.0",
     "discord.js": "^11.4.2",
     "dotenv": "^6.2.0",
+    "express": "^4.16.4",
     "node-opus": "^0.3.1",
     "npm": "^6.7.0",
     "pg": "^7.8.0",
