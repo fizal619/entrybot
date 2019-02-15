@@ -6,7 +6,7 @@ const { Pool } = require('pg');
 const connectionString = process.env.DB_URL;
 
 const pool = new Pool({ connectionString: connectionString });
-const {save_url, show_url} = require('./message_handlers');
+const {save_url, show_url, spongebobify} = require('./message_handlers');
 
 client.login(process.env.DISCORD_TOKEN);
 
@@ -34,6 +34,18 @@ client.on('message', msg => {
       case 'show':
         show_url(pool, msg.author.id + '').then(c=>{
           msg.reply(c);
+        });
+        break;
+      case 'spongebob':
+        let bobText = messageArray.concat([]);
+        bobText.shift();
+        bobText.shift();
+        bobText = bobText.join(' ');
+        if (bobText.length > 25) {
+          return msg.reply('Sorry, that\'s to long to read 😂');
+        }
+        spongebobify(bobText).then(c => {
+          msg.channel.send(c);
         });
         break;
       default:

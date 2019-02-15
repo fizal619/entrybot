@@ -1,3 +1,5 @@
+const axios = require('axios');
+
 const save_url = async (pool, uid, url) => {
   try {
     const check = await pool.query('select * from users where uid=$1;', [uid]);
@@ -32,8 +34,28 @@ const show_url = async (pool, uid) => {
   }
 }
 
+const spongebobify = async text => {
+  const scrambled = text.split('').map(letter=> {
+    let rand = Math.ceil(Math.random() * 2);
+    if (rand == 1) {
+      return letter.toUpperCase();
+    } else {
+      return letter.toLowerCase();
+    }
+  }).join('');
+  try {
+    const res =  await axios.get(`https://api.imgflip.com/caption_image?template_id=102156234&username=${process.env.IMGFLIP_USERNAME}&password=${process.env.IMGFLIP_PASSWORD}&boxes%5B%5D%5Btext%5D=${scrambled}`);
+    // console.log(res.data.data.url);
+    return res.data.data.url;
+
+  } catch (e) {
+    console.log(e.message);
+    return 'OOPS sorry. ☠';
+  }
+}
 
 module.exports = {
   save_url,
-  show_url
+  show_url,
+  spongebobify
 }
