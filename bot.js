@@ -49,7 +49,7 @@ client.on('message', msg => {
         });
         break;
       default:
-        msg.reply('\nHi! I will play the first 10 seconds of any youtube video whenever you join a voice channel.\nThink WWE intro music style!\n**Commands:** \n\`+entry save <url>\`\n\`+entry show\`\`+entry spongebob\ <less than 25 characters of text>` spongebob chicken meme generator\n \n Please complain to fizal if I fuck up. ');
+        msg.reply('\nHi! I will play the first 10 seconds of any youtube video whenever you join a voice channel.\nThink WWE intro music style!\n**Commands:** \n`+entry save <url>`\n`+entry show`\n`+entry spongebob <less than 25 characters of text>` \n \n Please complain to fizal if I fuck up. ');
     }
   } catch (e) {
     const channel = msg.guild.channels.find(ch => ch.name === 'entrybot-log');
