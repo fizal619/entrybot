@@ -6,7 +6,9 @@ const { Pool } = require('pg');
 const connectionString = process.env.DB_URL;
 
 const pool = new Pool({ connectionString: connectionString });
-const {save_url, show_url, spongebobify} = require('./message_handlers');
+const save_url = require('./routes/save_url'),
+      show_url = require('./routes/show_url'),
+      spongebob = require('./routes/spongebob');
 
 client.login(process.env.DISCORD_TOKEN);
 
@@ -27,29 +29,23 @@ client.on('message', msg => {
       case 'save':
         if (messageArray.length === 3) {
           save_url(pool, msg.author.id + '', messageArray[2]).then(c=>{
-            msg.reply(c);
+            msg.channel.send(c);
           });
         }
         break;
       case 'show':
         show_url(pool, msg.author.id + '').then(c=>{
-          msg.reply(c);
+          msg.channel.send(c);
         });
         break;
       case 'spongebob':
         let bobText = messageArray.concat([]);
-        bobText.shift();
-        bobText.shift();
-        bobText = bobText.join(' ');
-        if (bobText.length > 25) {
-          return msg.reply('Sorry, that\'s to long to read 😂');
-        }
-        spongebobify(bobText).then(c => {
+        spongebob(bobText).then(c => {
           msg.channel.send(c);
         });
         break;
       default:
-        msg.reply('\nHi! I will play the first 10 seconds of any youtube video whenever you join a voice channel.\nThink WWE intro music style!\n**Commands:** \n`+entry save <url>`\n`+entry show`\n`+entry spongebob <less than 25 characters of text>` \n \n Please complain to fizal if I fuck up. ');
+        msg.channel.send('\nHi! I will play the first 10 seconds of any youtube video whenever you join a voice channel.\nThink WWE intro music style!\n**Commands:** \n`+entry save <url>`\n`+entry show`\n`+entry spongebob <less than 25 characters of text>` \n \n Please complain to fizal if I fuck up. ');
     }
   } catch (e) {
     const channel = msg.guild.channels.find(ch => ch.name === 'entrybot-log');
@@ -79,6 +75,10 @@ const getAndSave = (url, name) => {
 
 // Play for a user if they now enter the voice channels.
 // Play only if someone has already asked entrybot to save their YT video.
+
+// existing timeout ID in memory
+let timeoutID = 0;
+
 client.on('voiceStateUpdate', async (old, nextChannel) => {
   let newUserChannel = nextChannel.voiceChannel
   let oldUserChannel = old.voiceChannel
@@ -97,7 +97,10 @@ client.on('voiceStateUpdate', async (old, nextChannel) => {
         // console.log(err);
         const dispatch = connection.playStream(YTfileStream);
         dispatch.setVolume(0.2);
-        setTimeout(()=> {
+
+        clearTimeout(timeoutID);
+
+        timeoutID = setTimeout(()=> {
           dispatch.end();
         }, 12000);
 
