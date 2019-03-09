@@ -8,6 +8,7 @@ const connectionString = process.env.DB_URL;
 const pool = new Pool({ connectionString: connectionString });
 const save_url = require('./routes/save_url'),
       show_url = require('./routes/show_url'),
+      say = require('./routes/say'),
       spongebob = require('./routes/spongebob');
 
 client.login(process.env.DISCORD_TOKEN);
@@ -44,8 +45,16 @@ client.on('message', msg => {
           msg.channel.send(c);
         });
         break;
+      case 'say':
+        let textArr = messageArray.concat([]);
+        textArr.shift(); 
+        textArr.shift();
+        say(msg, textArr.join(' ')).then(c => {
+          msg.channel.send(c);
+        });
+        break;
       default:
-        msg.channel.send('\nHi! I will play the first 10 seconds of any youtube video whenever you join a voice channel.\nThink WWE intro music style!\n**Commands:** \n`+entry save <url>`\n`+entry show`\n`+entry spongebob <less than 25 characters of text>` \n \n Please complain to fizal if I fuck up. ');
+        msg.channel.send('\nHi! I will play the first 10 seconds of any youtube video whenever you join a voice channel.\nThink WWE intro music style!\n**Commands:** \n`+entry save <url>`\n`+entry show`\n`+entry spongebob <less than 25 characters of text>` \n`+entry say <stuff>` \n \n Please complain to fizal if I fuck up. ');
     }
   } catch (e) {
     const channel = msg.guild.channels.find(ch => ch.name === 'entrybot-log');

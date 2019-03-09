@@ -21,6 +21,7 @@
     "node-opus": "^0.3.1",
     "npm": "^6.7.0",
     "pg": "^7.8.0",
+    "text-to-mp3": "^1.0.4",
     "youtube-audio-stream": "^0.3.0"
   }
 }
