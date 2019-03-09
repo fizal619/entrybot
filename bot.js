@@ -45,12 +45,12 @@ client.on('message', msg => {
           msg.channel.send(c);
         });
         break;
-      case 'say':
+        case 'say':
         let textArr = messageArray.concat([]);
         textArr.shift(); 
         textArr.shift();
         say(msg, textArr.join(' ')).then(c => {
-          msg.channel.send(c);
+          if (c) msg.channel.send(c);
         });
         break;
       default:
