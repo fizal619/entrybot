@@ -18,7 +18,10 @@ module.exports = async (msg, text) => {
     file.write(binaryStream);
     file.end();
     const dispatch = conn.playFile(path.join(__dirname,tmpName));
- 
+    dispatch.once('end', ()=>{
+      fs.unlinkSync(path.join(__dirname,tmpName));
+      msg.member.voiceChannel.leave();
+    })
     
   });
 }

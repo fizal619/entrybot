@@ -92,6 +92,10 @@ client.on('voiceStateUpdate', async (old, nextChannel) => {
   let newUserChannel = nextChannel.voiceChannel
   let oldUserChannel = old.voiceChannel
 
+  if (process.env.NODE_ENV !== 'development' && newUserChannel.name === 'entrybot-devlopment') {
+    return;
+  }
+
   try {
     if(oldUserChannel === undefined && newUserChannel !== undefined && nextChannel.user.id !== client.user.id) {
       console.log(nextChannel.user.username, 'joined.');
