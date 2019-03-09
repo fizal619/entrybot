@@ -89,8 +89,12 @@ const getAndSave = (url, name) => {
 let timeoutID = 0;
 
 client.on('voiceStateUpdate', async (old, nextChannel) => {
-  let newUserChannel = nextChannel.voiceChannel
-  let oldUserChannel = old.voiceChannel
+  let newUserChannel = nextChannel.voiceChannel;
+  let oldUserChannel = old.voiceChannel;
+
+  if (newUserChannel && process.env.NODE_ENV !== 'development' && newUserChannel.name === 'entrybot-development') {
+    return;
+  }
 
   if (process.env.NODE_ENV !== 'development' && nextChannel.name === 'entrybot-devlopment') {
     return;
