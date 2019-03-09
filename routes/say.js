@@ -1,27 +1,27 @@
-const txtomp3 = require("text-to-mp3");
+const googleTTS = require("google-tts-api");
 const fs = require("fs");
 const path = require('path');
 
+const isDevChannel = (voiceChannel) => {
+  return voiceChannel && process.env.NODE_ENV !== 'development' && voiceChannel.name === 'entrybot-development';
+}
+
 
 module.exports = async (msg, text) => {
-  if (text.length > 250) {
+  if (text.length > 200) {
     return "😎 I don't read shit that long 😎";
   }
-  txtomp3.getMp3(`${msg.member.nickname} said ${text}`, async (err, binaryStream) => {
-    if (err) {
-      throw err;
-    }
 
-    const conn = await msg.member.voiceChannel.join();
-    const tmpName = ""+Date.now()+".mp3";
-    const file = fs.createWriteStream(path.join(__dirname,tmpName));
-    file.write(binaryStream);
-    file.end();
-    const dispatch = conn.playFile(path.join(__dirname,tmpName));
-    dispatch.once('end', ()=>{
-      fs.unlinkSync(path.join(__dirname,tmpName));
-      msg.member.voiceChannel.leave();
-    })
-    
+  if(isDevChannel(msg.member.voiceChannel)) {
+    return;
+  }
+
+  const url = await googleTTS(`${msg.member.nickname} said ${text}`, 'en', 1);
+  const conn = await msg.member.voiceChannel.join();
+
+  const dispatch = conn.playFile(url);
+  dispatch.once('end', ()=>{
+    msg.member.voiceChannel.leave();
   });
+
 }

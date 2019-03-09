@@ -82,6 +82,10 @@ const getAndSave = (url, name) => {
   });
 }
 
+const isDevChannel = (voiceChannel) => {
+  return voiceChannel && process.env.NODE_ENV !== 'development' && voiceChannel.name === 'entrybot-development';
+}
+
 // Play for a user if they now enter the voice channels.
 // Play only if someone has already asked entrybot to save their YT video.
 
@@ -92,7 +96,7 @@ client.on('voiceStateUpdate', async (old, nextChannel) => {
   let newUserChannel = nextChannel.voiceChannel;
   let oldUserChannel = old.voiceChannel;
 
-  if (newUserChannel && process.env.NODE_ENV !== 'development' && newUserChannel.name === 'entrybot-development') {
+  if (isDevChannel(newUserChannel)) {
     return;
   }
 
