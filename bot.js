@@ -95,6 +95,7 @@ client.on('voiceStateUpdate', async (old, nextChannel) => {
   if (process.env.NODE_ENV !== 'development' && nextChannel.name === 'entrybot-devlopment') {
     return;
   }
+  console.log(newUserChannel.name);
 
   try {
     if(oldUserChannel === undefined && newUserChannel !== undefined && nextChannel.user.id !== client.user.id) {
