@@ -92,7 +92,7 @@ client.on('voiceStateUpdate', async (old, nextChannel) => {
   let newUserChannel = nextChannel.voiceChannel
   let oldUserChannel = old.voiceChannel
 
-  if (process.env.NODE_ENV !== 'development' && newUserChannel.name === 'entrybot-devlopment') {
+  if (process.env.NODE_ENV !== 'development' && nextChannel.name === 'entrybot-devlopment') {
     return;
   }
 
