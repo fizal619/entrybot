@@ -9,7 +9,7 @@
                         "RUN mkdir -p /usr/src/app",
                         "WORKDIR /usr/src/app",
                         "ADD . /usr/src/app",
-                        "CMD npm i --no-optional && npm cache clean --force",
+                        "RUN npm i --no-optional",
                         "ENV NODE_ENV production",
                         "ENV PORT 80",
                         "EXPOSE 80",
