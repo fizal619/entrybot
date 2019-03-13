@@ -2,9 +2,9 @@
     "schemaVersion": 2,
     "dockerfileLines": [
                         "FROM node:10.15.3-alpine",
-                        "RUN apk add --no-cache ffmpeg opus pixman cairo pango giflib ca-certificates && apk add --no-cache --virtual .build-deps python g++ make gcc .build-deps curl git pixman-dev cairo-dev pangomm-dev libjpeg-turbo-dev giflib-dev && apk del .build-deps",
                         "CMD mkdir -p /usr/src/app",
                         "WORKDIR /usr/src/app",
+                        "RUN apk add --no-cache ffmpeg opus pixman cairo pango giflib ca-certificates && apk add --no-cache --virtual .build-deps python g++ make gcc .build-deps curl git pixman-dev cairo-dev pangomm-dev libjpeg-turbo-dev giflib-dev && apk del .build-deps",
                         "ADD . /usr/src/app",
                         "RUN npm i --no-optional",
                         "ENV NODE_ENV production",
