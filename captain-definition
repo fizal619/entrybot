@@ -2,10 +2,7 @@
     "schemaVersion": 2,
     "dockerfileLines": [
                         "FROM node:10.15.3-alpine",
-                        "CMD apt-get update",
-                        "CMD apt-get install ffmpeg",
-                        "CMD apt-get install python",
-                        "CMD apt-get install build-essential",
+                        "RUN apk add --no-cache --virutal update ffmpeg python build-eesential",
                         "CMD mkdir -p /usr/src/app",
                         "WORKDIR /usr/src/app",
                         "ADD . /usr/src/app",
