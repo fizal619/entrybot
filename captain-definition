@@ -1,7 +1,13 @@
 {
     "schemaVersion": 2,
     "dockerfileLines": [
+                        "FROM jrottenberg/ffmpeg:4.0-scratch AS ffmpeg",
+                        "FROM python:3.6 AS python",
+                        "COPY --from=ffmpeg / /",
+                        "COPY --from=python / /",
                         "FROM node:10.15.3-alpine",
+                        "CMD sudo apt update",
+                        "CMD sudo apt install ffmpeg",
                         "RUN mkdir -p /usr/src/app",
                         "WORKDIR /usr/src/app",
                         "COPY ./package.json /usr/src/app/",
