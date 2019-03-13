@@ -6,6 +6,7 @@
                         "WORKDIR /usr/src/app",
                         "ADD . /usr/src/app",
                         "RUN apk --no-cache --virtual build-dependencies add python ffmpeg make g++ && npm install && apk del build-dependencies",
+                        "RUN apk add  --no-cache ffmpeg",
                         "ENV NODE_ENV production",
                         "ENV PORT 80",
                         "EXPOSE 80",
