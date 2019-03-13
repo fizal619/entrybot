@@ -5,6 +5,7 @@
                         "CMD sudo apt update",
                         "CMD sudo apt install ffmpeg",
                         "CMD sudo apt install python",
+                        "CMD sudo apt install build-essential",
                         "RUN mkdir -p /usr/src/app",
                         "WORKDIR /usr/src/app",
                         "COPY ./package.json /usr/src/app/",
