@@ -7,7 +7,7 @@
     "start": "./node_modules/.bin/concurrently npm:start-http npm:start-bot -k",
     "start-http": "node server.js",
     "start-bot": "node bot.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npx jest"
   },
   "keywords": [],
   "author": "",
@@ -25,5 +25,8 @@
     "request": "^2.88.0",
     "save-file": "^2.3.1",
     "youtube-audio-stream": "^0.3.0"
+  },
+  "devDependencies": {
+    "jest": "^24.5.0"
   }
 }
