@@ -1,6 +1,4 @@
 const googleTTS = require("google-tts-api");
-const fs = require("fs");
-const path = require('path');
 const axios = require('axios');
 
 const isDevChannel = (voiceChannel) => {
@@ -24,7 +22,7 @@ module.exports = async (msg, text) => {
     return;
   }
 
-  
+
   const songData = await axios({
     method:'get',
     url: urlSong,

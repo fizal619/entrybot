@@ -20,10 +20,8 @@ client.login(process.env.DISCORD_TOKEN);
 // second word should be a url.
 
 client.on('message', msg => {
-  console.log(msg);
   try {
     const messageArray = msg.content.split(' ');
-    console.log(messageArray);
     if (messageArray[0] !== '+entry') return;
 
     switch (messageArray[1]){
@@ -47,7 +45,7 @@ client.on('message', msg => {
         break;
         case 'say':
         let textArr = messageArray.concat([]);
-        textArr.shift(); 
+        textArr.shift();
         textArr.shift();
         say(msg, textArr.join(' ')).then(c => {
           if (c) msg.channel.send(c);
@@ -73,7 +71,6 @@ client.on('ready', () => {
 const getAndSave = (url, name) => {
   return new Promise(resolve => {
     try {
-      console.log('trying to read stream.')
       resolve(stream(url));
     } catch (exception) {
       console.log(exception);
@@ -102,7 +99,7 @@ client.on('voiceStateUpdate', async (old, nextChannel) => {
 
   try {
     if(oldUserChannel === undefined && newUserChannel !== undefined && nextChannel.user.id !== client.user.id) {
-      console.log(nextChannel.user.username, 'joined.');
+
       const tmpName = Date.now() + '';
       const res = await pool.query(`select * from users where uid=$1;`, [nextChannel.user.id]);
       if (res.rowCount === 0) return;
@@ -111,7 +108,6 @@ client.on('voiceStateUpdate', async (old, nextChannel) => {
 
       const YTfileStream = await getAndSave( res.rows[0].url, tmpName);
       if (YTfileStream) {
-        // console.log(err);
         const dispatch = connection.playStream(YTfileStream);
         dispatch.setVolume(0.2);
 
