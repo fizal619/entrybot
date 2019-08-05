@@ -9,5 +9,5 @@ deploy:
     branch: master
   provider: script
   skip_cleanup: true
-  script: sshpass -p $SP ssh -t $SU@$SH -p $SPP '. ~/.nvm/nvm.sh; cd ~/apps/entrybot; git pull origin master; npm i; pm2 restart npm;'
+  script: bash deploy.sh
 
