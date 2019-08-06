@@ -12,5 +12,5 @@ before_install:
   -in deploy_key.enc -out deploy_key -d
 - chmod 600 ./deploy_key
 - eval "$(ssh-agent -s)"
-- echo -e "Host $SERVER_IP_ADDRESS\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+- echo -e "Host $SH\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
 - ssh-add ./deploy_key
