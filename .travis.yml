@@ -1,13 +1,15 @@
 language: node_js
 node_js:
-  - "10"
-before_install:
-  - sudo apt-get update
-  - sudo apt-get install -y sshpass
+- '10'
 deploy:
   on:
     branch: master
   provider: script
   skip_cleanup: true
   script: bash deploy.sh
-
+before_install:
+- openssl aes-256-cbc -K $encrypted_fe9b686df666_key -iv $encrypted_fe9b686df666_iv
+  -in deploy_key.enc -out ./deploy_key -d
+- chmod 600 ./deploy_key
+- echo -e "Host $SERVER_IP_ADDRESS\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+- ssh-add ./deploy_key
