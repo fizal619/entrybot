@@ -1,83 +1,23 @@
 require('dotenv').config();
 const Discord = require('discord.js');
 const client = new Discord.Client();
-const stream = require('youtube-audio-stream');
+const ytdl = require('ytdl-core');
 const { Pool } = require('pg');
 const connectionString = process.env.DB_URL;
 
 const pool = new Pool({ connectionString: connectionString });
 const save_url = require('./routes/save_url'),
       show_url = require('./routes/show_url'),
+      clear_url = require('./routes/clear_url'),
       say = require('./routes/say'),
       spongebob = require('./routes/spongebob');
 
 client.login(process.env.DISCORD_TOKEN);
 
-
-
-// Allow a user to mention bot and supply a url.
-// Messsage should have two words when trimmed and split.
-// second word should be a url.
-
-client.on('message', msg => {
-  try {
-    const messageArray = msg.content.split(' ');
-    if (messageArray[0] !== '+entry') return;
-
-    switch (messageArray[1]){
-      case 'save':
-        if (messageArray.length === 3) {
-          save_url(pool, msg.author.id + '', messageArray[2]).then(c=>{
-            msg.channel.send(c);
-          });
-        }
-        break;
-      case 'show':
-        show_url(pool, msg.author.id + '').then(c=>{
-          msg.channel.send(c);
-        });
-        break;
-      case 'spongebob':
-        let bobText = messageArray.concat([]);
-        spongebob(bobText).then(c => {
-          msg.channel.send(c);
-        });
-        break;
-        case 'say':
-        let textArr = messageArray.concat([]);
-        textArr.shift();
-        textArr.shift();
-        say(msg, textArr.join(' ')).then(c => {
-          if (c) msg.channel.send(c);
-        });
-        break;
-      default:
-        msg.channel.send('\nHi! I will play the first 10 seconds of any youtube video whenever you join a voice channel.\nThink WWE intro music style!\n**Commands:** \n`+entry save <url>`\n`+entry show`\n`+entry spongebob <less than 25 characters of text>` \n`+entry say <stuff>` \n \n Please complain to fizal if I fuck up. ');
-    }
-  } catch (e) {
-    const channel = msg.guild.channels.find(ch => ch.name === 'entrybot-log');
-    // Do nothing if the channel wasn't found on this server
-    if (!channel) return;
-    // Send the message, mentioning the member
-    channel.send(`🚨*ERROR*🚨 \n \`\`\`${e}\`\`\` `);
-  }
-});
-
-
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.username}!`);
 });
 
-const getAndSave = (url, name) => {
-  return new Promise(resolve => {
-    try {
-      resolve(stream(url));
-    } catch (exception) {
-      console.log(exception);
-      resolve(null);
-    }
-  });
-}
 
 const isDevChannel = (voiceChannel) => {
   return voiceChannel && process.env.NODE_ENV !== 'development' && voiceChannel.name === 'entrybot-development';
@@ -106,9 +46,9 @@ client.on('voiceStateUpdate', async (old, nextChannel) => {
 
       const connection = await newUserChannel.join();
 
-      const YTfileStream = await getAndSave( res.rows[0].url, tmpName);
-      if (YTfileStream) {
-        const dispatch = connection.playStream(YTfileStream);
+      try {
+        const YTSTREAM = ytdl(res.rows[0].url, {quality: 'highestaudio'});
+        const dispatch = connection.playStream(YTSTREAM);
         dispatch.setVolume(0.2);
 
         clearTimeout(timeoutID);
@@ -117,11 +57,16 @@ client.on('voiceStateUpdate', async (old, nextChannel) => {
           dispatch.end();
         }, 12000);
 
-        dispatch.on('end', () => newUserChannel.leave());
+        dispatch.on('end', () => {
+          newUserChannel.leave();
+          YTSTREAM.destroy();
+        });
 
-      } else {
+      } catch (e) {
+        console.log(e);
         newUserChannel.leave();
       }
+
     } else if(newUserChannel === undefined){
       // User leaves a voice channel
     }
@@ -133,4 +78,67 @@ client.on('voiceStateUpdate', async (old, nextChannel) => {
     channel.send(`🚨*ERROR*🚨 \n \`\`\`${e}\`\`\` `);
   }
 
+});
+
+
+// MESSAGE HANDLERS
+
+client.on('message', msg => {
+  try {
+    const messageArray = msg.content.split(' ');
+    if (messageArray[0] !== '+entry' && process.env.NODE_ENV === 'development') return;
+
+    switch (messageArray[1]){
+      case 'save':
+        if (messageArray.length === 3) {
+          ytdl.getInfo(messageArray[2], (err, info) => {
+            if (!err && info.player_response && info.player_response.playabilityStatus && info.player_response.playabilityStatus.status) {
+              save_url(pool, msg.author.id + '', messageArray[2]).then(c=>{
+                msg.channel.send(c);
+              });
+            } else {
+              msg.channel.send('I can\'t play whatever this shit is yo. 🤢');
+            }
+          });
+        }
+        break;
+
+      case 'show':
+        show_url(pool, msg.author.id + '').then(c=>{
+          msg.channel.send(c);
+        });
+        break;
+
+      case 'clear':
+        clear_url(pool, msg.author.id + '').then(c=>{
+          msg.channel.send(c);
+        });
+        break;
+
+      case 'spongebob':
+        let bobText = messageArray.concat([]);
+        spongebob(bobText).then(c => {
+          msg.channel.send(c);
+        });
+        break;
+
+      case 'say':
+        let textArr = messageArray.concat([]);
+        textArr.shift();
+        textArr.shift();
+        say(msg, textArr.join(' ')).then(c => {
+          if (c) msg.channel.send(c);
+        });
+        break;
+
+      default:
+        msg.channel.send('\nHi! I will play the first 10 seconds of any youtube video whenever you join a voice channel.\nThink WWE intro music style!\n**Commands:** \n`+entry save <url>`\n`+entry show`\n`+entry spongebob <less than 25 characters of text>` \n`+entry say <stuff>` \n \n Please complain to fizal if I fuck up. ');
+    }
+  } catch (e) {
+    const channel = msg.guild.channels.find(ch => ch.name === 'entrybot-log');
+    // Do nothing if the channel wasn't found on this server
+    if (!channel) return;
+    // Send the message, mentioning the member
+    channel.send(`🚨*ERROR*🚨 \n \`\`\`${e}\`\`\` `);
+  }
 });
