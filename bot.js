@@ -86,7 +86,7 @@ client.on('voiceStateUpdate', async (old, nextChannel) => {
 client.on('message', msg => {
   try {
     const messageArray = msg.content.split(' ');
-    if (messageArray[0] !== '+test') return;
+    if (messageArray[0] !== '+entry') return;
 
     switch (messageArray[1]){
       case 'save':
