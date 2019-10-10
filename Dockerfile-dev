@@ -1,4 +1,4 @@
-FROM arm32v7/node:10-alpine
+FROM node:10-alpine
 RUN apk --no-cache --virtual build-dependencies add python make g++
 RUN apk add  --no-cache ffmpeg
 ENV NODE_ENV production
