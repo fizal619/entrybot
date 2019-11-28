@@ -10,7 +10,10 @@ const save_url = require('./routes/save_url'),
       show_url = require('./routes/show_url'),
       clear_url = require('./routes/clear_url'),
       say = require('./routes/say'),
+      kookie = require('./routes/kookie'),
       spongebob = require('./routes/spongebob');
+
+const queue = [];
 
 client.login(process.env.DISCORD_TOKEN);
 
@@ -121,6 +124,10 @@ client.on('message', msg => {
           msg.channel.send(c);
         });
         break;
+
+      case 'kookie':
+        kookie(msg.channel);
+      break;
 
       case 'say':
         let textArr = messageArray.concat([]);
