@@ -9,15 +9,16 @@ module.exports = async (channel) => {
     ffmpeg(process.env.CAMURL)
       .duration(5)
       .size('1280x720')
-      .save('kookie.gif')
+      .noAudio()
+      .save('kookie.mp4')
       .on('error', (e)=>{
         channel.send(`Something went wrong: ${e.message} 😭.`)
       })
       .on('end', ()=> {
         channel.send('Please open this in your browser.', {
           files: [{
-            attachment: 'kookie.gif',
-            name: 'kookie.gif'
+            attachment: 'kookie.mp4',
+            name: 'kookie.mp4'
           }]
         });
       });
