@@ -12,6 +12,7 @@ const save_url = require('./routes/save_url'),
       say = require('./routes/say'),
       kookie = require('./routes/kookie'),
       spongebob = require('./routes/spongebob');
+      // play = require('./routes/play');
 
 const queue = [];
 
@@ -23,9 +24,12 @@ client.on('ready', () => {
 
 
 const isDevChannel = (voiceChannel) => {
-  return voiceChannel && process.env.NODE_ENV !== 'development' && voiceChannel.name === 'entrybot-development';
+  return voiceChannel && voiceChannel.name === 'entrybot-development' && process.env.NODE_ENV !== 'development';
 }
 
+const isDevEnv = (voiceChannel) => {
+  return voiceChannel && voiceChannel.name !== 'entrybot-development' && process.env.NODE_ENV === 'development';
+}
 // Play for a user if they now enter the voice channels.
 // Play only if someone has already asked entrybot to save their YT video.
 
@@ -37,6 +41,10 @@ client.on('voiceStateUpdate', async (old, nextChannel) => {
   let oldUserChannel = old.voiceChannel;
 
   if (isDevChannel(newUserChannel)) {
+    return;
+  }
+
+  if (isDevEnv(newUserChannel)) {
     return;
   }
 
