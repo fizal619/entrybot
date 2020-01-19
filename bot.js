@@ -52,7 +52,7 @@ client.on('voiceStateUpdate', async (old, nextChannel) => {
       try {
         const YTSTREAM = ytdl(res.rows[0].url, {quality: 'highestaudio'});
         const dispatch = connection.playStream(YTSTREAM);
-        dispatch.setVolume(0.2);
+        dispatch.setVolume(0.4);
 
         clearTimeout(timeoutID);
 
