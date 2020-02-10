@@ -11,7 +11,8 @@ const save_url = require('./routes/save_url'),
       clear_url = require('./routes/clear_url'),
       say = require('./routes/say'),
       kookie = require('./routes/kookie'),
-      spongebob = require('./routes/spongebob');
+      spongebob = require('./routes/spongebob'),
+      animeSearch = require('./routes/animeSearch');
       // play = require('./routes/play');
 
 const queue = [];
@@ -129,6 +130,13 @@ client.on('message', msg => {
       case 'spongebob':
         let bobText = messageArray.concat([]);
         spongebob(bobText).then(c => {
+          msg.channel.send(c);
+        });
+        break;
+
+      case 'anime':
+        let animeText = messageArray.concat([]);
+        animeSearch(animeText).then(c => {
           msg.channel.send(c);
         });
         break;
