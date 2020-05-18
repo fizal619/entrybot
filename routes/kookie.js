@@ -24,7 +24,7 @@ module.exports = async (channel) => {
     //   });
 
     setTimeout(()=>{
-      channel.send('Don\'t fap too hard to this...', {
+      channel.send('Sorry bois', {
         files: [{
           attachment: 'lola.png',
           name: 'lola.png'
