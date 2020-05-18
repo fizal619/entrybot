@@ -59,7 +59,9 @@ client.on('voiceStateUpdate', async (old, nextChannel) => {
       const connection = await newUserChannel.join();
 
       try {
-        const YTSTREAM = ytdl(res.rows[0].url, {quality: 'highestaudio'});
+        const YTSTREAM = ytdl(res.rows[0].url, {
+          quality: 'lowestaudio'
+        });
         const dispatch = connection.playStream(YTSTREAM);
         dispatch.setVolume(0.4);
 

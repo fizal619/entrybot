@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "./node_modules/.bin/concurrently npm:start-http npm:start-bot -k",
+    "start": "node writeEnv.js && npx concurrently npm:start-bot npm:start-http -k",
+    "start-dev": "npx concurrently npm:start-bot npm:start-http -k",
     "start-http": "node server.js",
     "start-bot": "node bot.js",
     "test": "npx jest"
@@ -23,7 +24,7 @@
     "node-opus": "0.3.1",
     "pg": "^7.8.0",
     "request": "^2.88.0",
-    "ytdl-core": "1.0.6"
+    "ytdl-core": "2.1.2"
   },
   "devDependencies": {
     "jest": "^24.5.0"
