@@ -7,6 +7,6 @@ axios.get(`${process.env.VAULT_HOST}/v1/entrybot/creds`, {
   }
 })
 .then(res => {
-  console.log(res.data.data.DOTENV);
-  // fs.writeFileSync(".env", res.data.data.DOTENV);
+  // console.log(res.data.data.DOTENV);
+  fs.writeFileSync(".env", res.data.data.DOTENV);
 });
