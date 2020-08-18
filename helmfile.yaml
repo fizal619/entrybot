@@ -1,0 +1,6 @@
+---
+releases:
+  - name: entrybot
+    chart: deploy
+    secrets:
+      - deploy/secrets.yaml

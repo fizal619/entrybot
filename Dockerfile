@@ -11,5 +11,6 @@ COPY ./package-lock.json /app/package-lock.json
 RUN npm install
 
 COPY . /app
+RUN touch /app/.env
 
 CMD ["npm", "start"]

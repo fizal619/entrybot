@@ -4,8 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node writeEnv.js && npx concurrently npm:start-bot npm:start-http -k",
-    "start-dev": "npx concurrently npm:start-bot npm:start-http -k",
+    "start": "npx concurrently npm:start-bot npm:start-http -k",
     "start-http": "node server.js",
     "start-bot": "node bot.js",
     "test": "npx jest"
