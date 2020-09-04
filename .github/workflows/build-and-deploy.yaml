@@ -35,9 +35,10 @@ jobs:
         docker login -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }}
         docker buildx build \
           --platform linux/arm/v7 \
-          -t ${{ secrets.REGISTRY_USERNAME }}/entrybot:${{ github.sha }} \
+          -t ${{ secrets.REGISTRY_USERNAME }}/entrybot:latest \
           --push .
         docker images
+
     - uses: azure/k8s-set-context@v1
       with:
         method: kubeconfig
@@ -50,4 +51,11 @@ jobs:
       id: install
 
     - run: |
-        helm upgrade --set image.repository="${{ secrets.REGISTRY_USERNAME }}/entrybot" --set image.version="${{ github.sha }}" entrybot deploy
+        sudo apt install sops gnupg2
+        echo "${{ secrets.ENC_KEY }}" > private.key
+        gpg --import private.key
+        curl -o helmfile https://github.com/roboll/helmfile/releases/download/v0.125.0/helmfile_linux_amd64
+        chmod +x helmfile
+        helm plugin install https://github.com/zendesk/helm-secrets
+        helm plugin install https://github.com/databus23/helm-diff --version master
+        ./helmfile apply
