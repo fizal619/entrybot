@@ -6,7 +6,11 @@ name: CI
 # events but only for the master branch
 on:
   workflow_dispatch:
-
+    inputs:
+      version:
+        description: "Version of code to 🚀"
+        required: true
+        default: "master"
   push:
     branches: [ master ]
 
@@ -21,23 +25,25 @@ jobs:
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event.inputs.version }}
 
-    # - name: Set up Docker Buildx
-    #   id: buildx
-    #   uses: crazy-max/ghaction-docker-buildx@v3
-    #   with:
-    #     buildx-version: latest
-    #     qemu-version: latest
-    # - name: Available platforms
-    #   run: echo ${{ steps.buildx.outputs.platforms }}
+    - name: Set up Docker Buildx
+      id: buildx
+      uses: crazy-max/ghaction-docker-buildx@v3
+      with:
+        buildx-version: latest
+        qemu-version: latest
+    - name: Available platforms
+      run: echo ${{ steps.buildx.outputs.platforms }}
 
-    # - run: |
-    #     docker login -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }}
-    #     docker buildx build \
-    #       --platform linux/arm/v7 \
-    #       -t ${{ secrets.REGISTRY_USERNAME }}/entrybot:latest \
-    #       --push .
-    #     docker images
+    - run: |
+        docker login -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }}
+        docker buildx build \
+          --platform linux/arm/v7 \
+          -t ${{ secrets.REGISTRY_USERNAME }}/entrybot:latest \
+          --push .
+        docker images
 
     - uses: azure/k8s-set-context@v1
       with:
