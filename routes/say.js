@@ -5,35 +5,28 @@ const isDevChannel = (voiceChannel) => {
   return voiceChannel && process.env.NODE_ENV !== 'development' && voiceChannel.name === 'entrybot-development';
 }
 
-
 module.exports = async (msg, text) => {
+  if (isDevChannel(msg.member.voice ? msg.member.voice.channel : msg.channel)){
+    return;
+  }
+
   if (text.length > 160) {
     return "😎 I don't read shit that long 😎 160 characters limit.";
   }
+
   const urlSong = await googleTTS(`${msg.member.nickname} said ${text}. end of report. wo`, 'en', 0.6);
 
-  if (!msg.member.voiceChannel){
+  if (!msg.member.voice.channel){
     return {
       files: [urlSong + '.mp3']
     }
   }
 
-  if(isDevChannel(msg.member.voiceChannel)) {
-    return;
-  }
+  const conn = await msg.member.voice.channel.join();
 
-
-  const songData = await axios({
-    method:'get',
-    url: urlSong,
-    responseType:'stream'
-  });
-
-  const conn = await msg.member.voiceChannel.join();
-
-  const dispatch = conn.playStream(urlSong);
-  dispatch.once('end', async ()=>{
-    await msg.member.voiceChannel.leave();
+  const dispatch = conn.play(urlSong);
+  dispatch.once('finish', async ()=>{
+    await msg.member.voice.channel.leave();
   });
 
 }

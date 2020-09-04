@@ -1,7 +1,6 @@
-FROM arm32v7/node:10-alpine
-COPY qemu-arm-static /usr/bin
-RUN apk --no-cache --virtual build-dependencies add python make g++
-RUN apk add  --no-cache ffmpeg
+FROM node:12-alpine
+RUN apk --no-cache --virtual build-dependencies add python make g++ ffmpeg
+RUN rm -rf /var/cache/apk/*
 ENV NODE_ENV production
 
 WORKDIR /app

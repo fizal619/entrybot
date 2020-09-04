@@ -24,68 +24,53 @@ client.on('ready', () => {
 });
 
 
-const isDevChannel = (voiceChannel) => {
-  return voiceChannel && voiceChannel.name === 'entrybot-development' && process.env.NODE_ENV !== 'development';
+const isDevChannel = (channel) => {
+  return channel && && process.env.NODE_ENV !== 'development' && channel.name === 'entrybot-development';
 }
 
-const isDevEnv = (voiceChannel) => {
-  return voiceChannel && voiceChannel.name !== 'entrybot-development' && process.env.NODE_ENV === 'development';
-}
 // Play for a user if they now enter the voice channels.
 // Play only if someone has already asked entrybot to save their YT video.
 
 // existing timeout ID in memory
 let timeoutID = 0;
 
-client.on('voiceStateUpdate', async (old, nextChannel) => {
-  let newUserChannel = nextChannel.voiceChannel;
-  let oldUserChannel = old.voiceChannel;
-
-  if (isDevChannel(newUserChannel)) {
-    return;
-  }
-
-  if (isDevEnv(newUserChannel)) {
+client.on('voiceStateUpdate', async (oldState, newState) => {
+  // console.log(oldState.channelID, newState.channelID);
+  if (isDevChannel(newState.member.voice.channel)) {
     return;
   }
 
   try {
-    if(oldUserChannel === undefined && newUserChannel !== undefined && nextChannel.user.id !== client.user.id) {
-
-      const tmpName = Date.now() + '';
-      const res = await pool.query(`select * from users where uid=$1;`, [nextChannel.user.id]);
+    if(!oldState.channelID && newState.channelID && newState.member.user.id !== client.user.id) {
+      const res = await pool.query(`select * from users where uid=$1;`, [newState.member.user.id]);
       if (res.rowCount === 0) return;
 
-      const connection = await newUserChannel.join();
+      const connection = await newState.member.voice.channel.join();
 
       try {
         const YTSTREAM = ytdl(res.rows[0].url, {
           quality: 'lowestaudio'
         });
-        const dispatch = connection.playStream(YTSTREAM);
-        dispatch.setVolume(0.4);
+        connection.play(YTSTREAM, { volume: 0.1 });
 
         clearTimeout(timeoutID);
 
         timeoutID = setTimeout(()=> {
-          dispatch.end();
-        }, 12000);
-
-        dispatch.on('end', () => {
-          newUserChannel.leave();
+          connection.disconnect();
           YTSTREAM.destroy();
-        });
+        }, 12000);
 
       } catch (e) {
         console.log(e);
-        newUserChannel.leave();
+        connection.disconnect();
       }
 
-    } else if(newUserChannel === undefined){
+    } else if(!newState.channelID){
       // User leaves a voice channel
     }
   } catch (e) {
-    const channel = nextChannel.guild.channels.find(ch => ch.name === 'entrybot-log');
+    console.log("ERROR??", e);
+    const channel  = newState.guild.channels.find(ch => ch.name === 'entrybot-log');
     // Do nothing if the channel wasn't found on this server
     if (!channel) return;
     // Send the message, mentioning the member
@@ -100,7 +85,7 @@ client.on('voiceStateUpdate', async (old, nextChannel) => {
 client.on('message', msg => {
   try {
     const messageArray = msg.content.split(' ');
-    if (messageArray[0] !== '+entry') return;
+    if (messageArray[0] !== '+test') return;
 
     switch (messageArray[1]){
       case 'save':
