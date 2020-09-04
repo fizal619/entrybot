@@ -25,7 +25,7 @@ client.on('ready', () => {
 
 
 const isDevChannel = (channel) => {
-  return channel && && process.env.NODE_ENV !== 'development' && channel.name === 'entrybot-development';
+  return channel && process.env.NODE_ENV !== 'development' && channel.name === 'entrybot-development';
 }
 
 // Play for a user if they now enter the voice channels.
