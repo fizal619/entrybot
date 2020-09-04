@@ -5,6 +5,8 @@ name: CI
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch
 on:
+  workflow_dispatch:
+
   push:
     branches: [ master ]
 
@@ -48,5 +50,4 @@ jobs:
       id: install
 
     - run: |
-        helm uninstall entrybot || echo "APP NOT INSTALLED ALREADY"
-        helm install --set image.repository="${{ secrets.REGISTRY_USERNAME }}/entrybot" --set image.version="${{ github.sha }}" entrybot deploy
+        helm upgrade --set image.repository="${{ secrets.REGISTRY_USERNAME }}/entrybot" --set image.version="${{ github.sha }}" entrybot deploy

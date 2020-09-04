@@ -37,7 +37,7 @@ spec:
             - name: IMGFLIP_PASSWORD
               value: {{ .Values.IMGFLIP_PASSWORD }}
             - name: PORT
-              value: "3000"
+              value: {{ .Values.service.port }}
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
