@@ -1,4 +1,7 @@
 ---
+helmDefaults:
+  recreatePods: true
+
 releases:
   - name: entrybot
     chart: deploy
