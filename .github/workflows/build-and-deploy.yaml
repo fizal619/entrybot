@@ -51,13 +51,18 @@ jobs:
       id: install
 
     - run: |
-        sudo apt install gnupg2
+        echo "============= SOPS n' GPG ============="
+        sudo apt install -y gnupg2
         curl -LJ --output sops.deb https://github.com/mozilla/sops/releases/download/v3.6.0/sops_3.6.0_amd64.deb
         sudo apt install -y ./sops.deb
+        echo "============= IMPORTING KEY ============="
         echo "${{ secrets.ENC_KEY }}" > private.key
         gpg --import private.key
+        echo "============= HELMFILE ============="
         curl -LJ --output helmfile https://github.com/roboll/helmfile/releases/download/v0.125.0/helmfile_linux_amd64
         chmod +x helmfile
+        echo "============= HELM PLUGINS ============="
         helm plugin install https://github.com/zendesk/helm-secrets
         helm plugin install https://github.com/databus23/helm-diff --version master
+        echo "============= HELMFILE APPLY ============="
         ./helmfile apply
