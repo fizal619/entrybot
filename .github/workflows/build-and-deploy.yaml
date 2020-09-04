@@ -22,22 +22,22 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
 
-    - name: Set up Docker Buildx
-      id: buildx
-      uses: crazy-max/ghaction-docker-buildx@v3
-      with:
-        buildx-version: latest
-        qemu-version: latest
-    - name: Available platforms
-      run: echo ${{ steps.buildx.outputs.platforms }}
+    # - name: Set up Docker Buildx
+    #   id: buildx
+    #   uses: crazy-max/ghaction-docker-buildx@v3
+    #   with:
+    #     buildx-version: latest
+    #     qemu-version: latest
+    # - name: Available platforms
+    #   run: echo ${{ steps.buildx.outputs.platforms }}
 
-    - run: |
-        docker login -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }}
-        docker buildx build \
-          --platform linux/arm/v7 \
-          -t ${{ secrets.REGISTRY_USERNAME }}/entrybot:latest \
-          --push .
-        docker images
+    # - run: |
+    #     docker login -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }}
+    #     docker buildx build \
+    #       --platform linux/arm/v7 \
+    #       -t ${{ secrets.REGISTRY_USERNAME }}/entrybot:latest \
+    #       --push .
+    #     docker images
 
     - uses: azure/k8s-set-context@v1
       with:
@@ -51,6 +51,7 @@ jobs:
       id: install
 
     - run: |
+        sudo apt update
         sudo apt install sops gnupg2
         echo "${{ secrets.ENC_KEY }}" > private.key
         gpg --import private.key
