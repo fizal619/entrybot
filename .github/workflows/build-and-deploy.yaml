@@ -51,8 +51,9 @@ jobs:
       id: install
 
     - run: |
-        sudo apt update
-        sudo apt install sops gnupg2
+        sudo apt install gnupg2
+        curl -o sops.deb https://github.com/mozilla/sops/releases/download/v3.6.0/sops_3.6.0_amd64.deb
+        sudo apt install -y ./sops.deb
         echo "${{ secrets.ENC_KEY }}" > private.key
         gpg --import private.key
         curl -o helmfile https://github.com/roboll/helmfile/releases/download/v0.125.0/helmfile_linux_amd64
