@@ -5,5 +5,7 @@ helmDefaults:
 releases:
   - name: entrybot
     chart: deploy
+    values:
+      - image.tag: {{ requiredEnv "GITHUB_SHA" | quote }}
     secrets:
       - deploy/secrets.yaml

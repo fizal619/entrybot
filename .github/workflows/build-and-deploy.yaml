@@ -28,22 +28,13 @@ jobs:
       with:
         ref: ${{ github.event.inputs.version }}
 
-    - name: Set up Docker Buildx
-      id: buildx
-      uses: crazy-max/ghaction-docker-buildx@v3
+    - name: Push to Docker Hub
+      uses: docker/build-push-action@v1
       with:
-        buildx-version: latest
-        qemu-version: latest
-    - name: Available platforms
-      run: echo ${{ steps.buildx.outputs.platforms }}
-
-    - run: |
-        docker login -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }}
-        docker buildx build \
-          --platform linux/arm/v7 \
-          -t ${{ secrets.REGISTRY_USERNAME }}/entrybot:latest \
-          --push .
-        docker images
+        username: ${{ secrets.REGISTRY_USERNAME }}
+        password: ${{ secrets.REGISTRY_PASSWORD }}
+        repository: fsarif/entrybot
+        tag_with_ref: true
 
     - uses: azure/k8s-set-context@v1
       with:
