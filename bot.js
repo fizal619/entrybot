@@ -71,6 +71,7 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
 
           introState.timeoutID = setTimeout(()=> {
             introState.connection.disconnect();
+            connections[newState.guild.name].connection.disconnect();
             delete connections[newState.guild.name];
           }, 12000);
 
@@ -81,6 +82,7 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
       } catch (e) {
         console.log(e);
         introState.connection.disconnect();
+        connections[newState.guild.name].connection.disconnect();
         delete connections[newState.guild.name];
       }
 
