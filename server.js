@@ -2,7 +2,9 @@ const express = require('express')
 const app = express()
 const port = process.env.PORT || 3000
 
-cron.schedule('5 7 * * *', () => {
+// let's exit the process and force a restart
+// to combat a memory leak I cannot find
+cron.schedule('5 11 * * *', () => {
   console.log('Crashing to combat memory leak lmao.');
   process.exit();
 });
