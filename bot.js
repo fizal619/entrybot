@@ -41,6 +41,14 @@ const isDevChannel = (channel) => {
 // existing timeout ID in memory
 let connections = {};
 
+// if a variable is reassigned at the global scope
+// it should technically garbage collect all the closures
+const reassignConnections = () => {
+  if (Object.keys(connections).length === 0) {
+    connections = {};
+  }
+}
+
 client.on('voiceStateUpdate', async (oldState, newState) => {
   // console.log(oldState.channelID, newState.channelID);
   if (isDevChannel(newState.member.voice.channel)) {
@@ -83,6 +91,7 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
             connections[newState.guild.name] = null;
             introState = null;
             delete connections[newState.guild.name];
+            reassignConnections();
           }, 12000);
 
         }, introState.dispatcher ? 2000 : 0);
@@ -97,6 +106,7 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
         connections[newState.guild.name] = null;
         introState = null;
         delete connections[newState.guild.name];
+        reassignConnections();
       }
 
     } else if(!newState.channelID){
