@@ -14,7 +14,7 @@ module.exports = async (msg, text) => {
     return "😎 I don't read shit that long 😎 160 characters limit.";
   }
 
-  const urlSong = await googleTTS(`${msg.member.nickname} said ${text}. end of report. wo`, 'en', 0.6);
+  const urlSong = await googleTTS(`${msg.member.nickname} said ${text}. end of report. oowoo`, 'en', 0.6);
 
   if (!msg.member.voice.channel){
     return {
