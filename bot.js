@@ -3,10 +3,8 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 const ytdl = require('ytdl-core');
 const { Pool } = require('pg');
-const Sentry = require("@sentry/node");
 
 const connectionString = process.env.DB_URL;
-const sentryDSN = process.env.SENTRY_DSN;
 
 const pool = new Pool({ connectionString: connectionString });
 const save_url = require('./routes/save_url'),
@@ -17,11 +15,6 @@ const save_url = require('./routes/save_url'),
       spongebob = require('./routes/spongebob'),
       animeSearch = require('./routes/animeSearch');
       // play = require('./routes/play');
-
-Sentry.init({
-  dsn: sentryDSN,
-  tracesSampleRate: 1.0
-});
 
 
 client.login(process.env.DISCORD_TOKEN);
@@ -45,7 +38,7 @@ let connections = {};
 // it should technically garbage collect all the closures
 const reassignConnections = () => {
   if (Object.keys(connections).length === 0) {
-    connections = {};
+    connections = null;
   }
 }
 
@@ -59,6 +52,10 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
     if(!oldState.channelID && newState.channelID && newState.member.user.id !== client.user.id) {
       const res = await pool.query(`select * from users where uid=$1;`, [newState.member.user.id]);
       if (res.rowCount === 0) return;
+
+      if (connections === null) {
+        connections = {};
+      }
 
       let introState = connections[newState.guild.name] || {
         connection: await newState.member.voice.channel.join(),
@@ -100,7 +97,6 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
 
       } catch (e) {
         console.log(e);
-        Sentry.captureException(e);
         introState.connection.disconnect();
         // connections[newState.guild.name].connection.disconnect();
         connections[newState.guild.name] = null;
@@ -114,7 +110,6 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
     }
   } catch (e) {
     console.log("ERROR??", e);
-    sentryDSN.captureException(e);
     // const channel  = newState.guild.channels.find(ch => ch.name === 'entrybot-log');
     // Do nothing if the channel wasn't found on this server
     if (!channel) return;
@@ -190,7 +185,6 @@ client.on('message', msg => {
         msg.channel.send('\nHi! I will play the first 10 seconds of any youtube video whenever you join a voice channel.\nThink WWE intro music style!\n**Commands:** \n`+entry save <url>`\n`+entry show`\n`+entry spongebob <less than 25 characters of text>` \n`+entry say <stuff>` \n \n Please complain to fizal if I fuck up. ');
     }
   } catch (e) {
-    Sentry.captureException(e);
     const channel = msg.guild.channels.find(ch => ch.name === 'entrybot-log');
     // Do nothing if the channel wasn't found on this server
     if (!channel) return;
