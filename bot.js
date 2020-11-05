@@ -125,19 +125,23 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
 client.on('message', msg => {
   try {
     const messageArray = msg.content.split(' ');
-    if (messageArray[0] !== '+entry') return;
+    if (messageArray[0] !== '+test') return;
 
     switch (messageArray[1]){
       case 'save':
         if (messageArray.length === 3) {
-          ytdl.getInfo(messageArray[2], (err, info) => {
-            if (!err && info.player_response && info.player_response.playabilityStatus && info.player_response.playabilityStatus.status) {
+          ytdl.getInfo(messageArray[2]).then((info) => {
+            if (info.player_response && info.player_response.playabilityStatus && info.player_response.playabilityStatus.status) {
               save_url(pool, msg.author.id + '', messageArray[2]).then(c=>{
                 msg.channel.send(c);
               });
             } else {
+              console.log(err);
               msg.channel.send('I can\'t play whatever this shit is yo. 🤢');
             }
+          }).catch(err => {
+            console.log(err);
+            msg.channel.send('I can\'t play whatever this shit is yo. 🤢');
           });
         }
         break;
