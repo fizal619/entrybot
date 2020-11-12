@@ -28,6 +28,13 @@ jobs:
       with:
         ref: ${{ github.event.inputs.version }}
 
+    - uses: actions/cache@v2
+      with:
+        path:  node_modules
+        key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-modules-
+
     - name: Set up Docker Buildx
       id: buildx
       uses: crazy-max/ghaction-docker-buildx@v3
@@ -44,6 +51,13 @@ jobs:
           -t ${{ secrets.REGISTRY_USERNAME }}/entrybot:${{ github.sha }} \
           --push .
         docker images
+
+    - uses: actions/cache@v2
+      with:
+        path:  node_modules
+        key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-modules-
 
     - uses: azure/k8s-set-context@v1
       with:
