@@ -39,7 +39,7 @@ spec:
             - name: NEXUS_EMAIL
               value: {{ .Values.NEXUS_EMAIL }}
             - name: NEXUS_PW
-              value: {{ .Values.NEXUS_PW }}
+              value: "{{ .Values.NEXUS_PW }}"
             - name: PORT
               value: "{{ .Values.service.port }}"
           ports:
