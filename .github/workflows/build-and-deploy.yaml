@@ -30,7 +30,7 @@ jobs:
 
     - uses: actions/cache@v2
       with:
-        path:  /var/lib/docker
+        path:  build/cache
         key: ${{ runner.os }}-modules-${{ hashFiles('**/Dockerfile') }}
         restore-keys: |
           ${{ runner.os }}-modules-
@@ -45,8 +45,11 @@ jobs:
       run: echo ${{ steps.buildx.outputs.platforms }}
 
     - run: |
+        mkdir -p build/cache
         docker login -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }}
         docker buildx build \
+          --cache-to=type=local,dest=build/cache \
+          --cache-from=type=local,dest=build/cache \
           --platform linux/arm/v7 \
           -t ${{ secrets.REGISTRY_USERNAME }}/entrybot:${{ github.sha }} \
           --push .
@@ -54,7 +57,7 @@ jobs:
 
     - uses: actions/cache@v2
       with:
-        path:  /var/lib/docker
+        path:  build/cache
         key: ${{ runner.os }}-modules-${{ hashFiles('**/Dockerfile') }}
         restore-keys: |
           ${{ runner.os }}-modules-

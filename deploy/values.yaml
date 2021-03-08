@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: fsarif/entrybot
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
 
 imagePullSecrets: []
 nameOverride: ""
