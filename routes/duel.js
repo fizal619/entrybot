@@ -38,7 +38,7 @@ module.exports = async (type) => {
     await page.select("#custom-game-area p:nth-child(4) select", type);
 
     await page.click("#custom-game-area > p:nth-child(7) > button");
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
     const pages = await browser.pages();
 
     //the last tab opened, since they open it in a popup
