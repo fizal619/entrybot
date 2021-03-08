@@ -57,7 +57,7 @@ jobs:
         path:  node_modules
         key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
-          ${{ runner.os }}-modules-
+          ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
 
     - uses: azure/k8s-set-context@v1
       with:
