@@ -4,11 +4,15 @@ const headless = true;
 module.exports = async (type) => {
   try {
 
-    if(!type) {
+    if(!type && !['single', 'tag', 'match'].includes(tag)) {
       return "Sorry you have to pick a duel type eg. `+entry duel [single|tag|match]`"
     }
 
-    const browser = await puppeteer.launch({ headless });
+    const browser = await puppeteer.launch({
+      headless,
+      executablePath:'/usr/bin/chromium-browser',
+    });
+
     const page = await browser.newPage();
     await page.goto('https://duelingnexus.com/login', {
       waitUntil: 'networkidle2',
