@@ -4,7 +4,7 @@ const headless = true;
 module.exports = async (type) => {
   try {
 
-    if(!type && !['single', 'tag', 'match'].includes(tag)) {
+    if(!type && ['single', 'tag', 'match'].includes(tag)) {
       return "Sorry you have to pick a duel type eg. `+entry duel [single|tag|match]`"
     }
 
