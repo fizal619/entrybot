@@ -13,7 +13,8 @@ const save_url = require('./routes/save_url'),
       say = require('./routes/say'),
       kookie = require('./routes/kookie'),
       spongebob = require('./routes/spongebob'),
-      animeSearch = require('./routes/animeSearch');
+      animeSearch = require('./routes/animeSearch'),
+      duel = require('./routes/duel');
       // play = require('./routes/play');
 
 
@@ -168,7 +169,7 @@ client.on('message', msg => {
       case 'anime':
         let animeText = messageArray.concat([]);
         animeSearch(animeText).then(c => {
-          msg.channel.send(c);
+          ;
         });
         break;
 
@@ -185,8 +186,14 @@ client.on('message', msg => {
         });
         break;
 
+      case 'duel':
+        duel(messageArray[2]).then(c => {
+          msg.channel.send(c);
+        });
+        break;
+
       default:
-        msg.channel.send('\nHi! I will play the first 10 seconds of any youtube video whenever you join a voice channel.\nThink WWE intro music style!\n**Commands:** \n`+entry save <url>`\n`+entry show`\n`+entry spongebob <less than 25 characters of text>` \n`+entry say <stuff>` \n \n Please complain to fizal if I fuck up. ');
+        msg.channel.send('\nHi! I will play the first 10 seconds of any youtube video whenever you join a voice channel.\nThink WWE intro music style!\n**Commands:** \n`+entry save <url>`\n`+entry show`\n`+entry spongebob <less than 25 characters of text>` \n`+entry say <stuff>` \n+entry duel [single|tag|match]\n \n Please complain to fizal if I fuck up. ');
     }
   } catch (e) {
     const channel = msg.guild.channels.find(ch => ch.name === 'entrybot-log');
