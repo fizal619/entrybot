@@ -187,6 +187,7 @@ client.on('message', msg => {
         break;
 
       case 'duel':
+        msg.channel.send("Attempting to get duel link. 🃏");
         duel(messageArray[2]).then(c => {
           msg.channel.send(c);
         });

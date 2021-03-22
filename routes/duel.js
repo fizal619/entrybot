@@ -4,7 +4,7 @@ const headless = true;
 module.exports = async (type) => {
   try {
 
-    if(!type && ['single', 'tag', 'match'].includes(tag)) {
+    if(!type && !['single', 'tag', 'match'].includes(tag)) {
       return "Sorry you have to pick a duel type eg. `+entry duel [single|tag|match]`"
     }
 
@@ -38,14 +38,14 @@ module.exports = async (type) => {
     await page.select("#custom-game-area p:nth-child(4) select", type);
 
     await page.click("#custom-game-area > p:nth-child(7) > button");
-    await page.waitForTimeout(500);
+    await page.waitForTimeout(100);
     const pages = await browser.pages();
 
     //the last tab opened, since they open it in a popup
     const duelURL = pages[pages.length - 1].url();
 
     //close the browser so we can get the duel session.
-    await browser.close();
+    browser.close();
 
     return `${type} duel link: ${duelURL}`;
 
