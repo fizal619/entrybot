@@ -43,12 +43,14 @@ jobs:
       run: echo ${{ steps.buildx.outputs.platforms }}
 
     - run: |
+        sudo apt-get install qemu-user-static -y
         mkdir -p build/cache
         docker login -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }}
         docker buildx build \
           --cache-to=type=local,dest=build/cache \
           --cache-from=type=local,src=build/cache \
           --platform linux/arm/v7 \
+          --progress plain \
           -t ${{ secrets.REGISTRY_USERNAME }}/entrybot:${{ github.sha }} \
           --push .
         docker images
