@@ -45,7 +45,7 @@ jobs:
     - run: |
         mkdir -p build/cache
         docker login -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }}
-        docker build \
+        docker buildx build \
           --cache-to=type=local,dest=build/cache \
           --cache-from=type=local,src=build/cache \
           --platform linux/arm/v7 \
