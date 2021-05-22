@@ -44,10 +44,12 @@ const reassignConnections = () => {
 }
 
 client.on('voiceStateUpdate', async (oldState, newState) => {
-  // console.log(oldState.channelID, newState.channelID);
+  console.log(oldState.channelID, newState.channelID);
   if (isDevChannel(newState.member.voice.channel)) {
+    console.log("not allowed")
     return;
   }
+  console.log("allowed")
 
   try {
     if(!oldState.channelID && newState.channelID && newState.member.user.id !== client.user.id) {
