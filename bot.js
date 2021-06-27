@@ -45,10 +45,10 @@ const reassignConnections = () => {
 
 client.on('voiceStateUpdate', async (oldState, newState) => {
   console.log(oldState.channelID, newState.channelID);
-  // if (isDevChannel(newState.member.voice.channel)) {
-  //   console.log("not allowed")
-  //   return;
-  // }
+  if (isDevChannel(newState.member.voice.channel)) {
+    console.log("not allowed")
+    return;
+  }
   console.log("allowed")
 
   try {
@@ -75,9 +75,11 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
       }
 
       try {
-        setTimeout(() => {
+        setTimeout(async () => {
+
           const YTSTREAM = ytdl(res.rows[0].url, {
-            quality: 'lowestaudio'
+            filter: "audioonly",
+            dlChunkSize: 0
           });
           introState.dispatcher = introState.connection.play(YTSTREAM, { volume: 0.1 });
           setTimeout(()=>{
@@ -129,7 +131,7 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
 client.on('message', msg => {
   try {
     const messageArray = msg.content.split(' ');
-    if (messageArray[0] !== '+test') return;
+    if (messageArray[0] !== '+entry') return;
 
     switch (messageArray[1]){
       case 'save':
