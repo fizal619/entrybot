@@ -45,10 +45,10 @@ const reassignConnections = () => {
 
 client.on('voiceStateUpdate', async (oldState, newState) => {
   console.log(oldState.channelID, newState.channelID);
-  if (isDevChannel(newState.member.voice.channel)) {
-    console.log("not allowed")
-    return;
-  }
+  // if (isDevChannel(newState.member.voice.channel)) {
+  //   console.log("not allowed")
+  //   return;
+  // }
   console.log("allowed")
 
   try {
@@ -110,6 +110,7 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
 
     } else if(!newState.channelID){
       // User leaves a voice channel
+      console.log("USER LEFT");
     }
   } catch (e) {
     console.log("ERROR??", e);
@@ -128,7 +129,7 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
 client.on('message', msg => {
   try {
     const messageArray = msg.content.split(' ');
-    if (messageArray[0] !== '+entry') return;
+    if (messageArray[0] !== '+test') return;
 
     switch (messageArray[1]){
       case 'save':
