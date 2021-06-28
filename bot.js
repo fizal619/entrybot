@@ -76,7 +76,7 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
 
       try {
         setTimeout(async () => {
-
+          const duration = parseInt(res.rows[0].duration) * 1000;
           const YTSTREAM = ytdl(res.rows[0].url, {
             filter: "audioonly",
             dlChunkSize: 0
@@ -84,7 +84,7 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
           introState.dispatcher = introState.connection.play(YTSTREAM, { volume: 0.1 });
           setTimeout(()=>{
             YTSTREAM.destroy();
-          }, 12000);
+          }, duration);
           clearTimeout(introState.timeoutID);
 
           introState.timeoutID = setTimeout(()=> {
@@ -94,7 +94,7 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
             introState = null;
             delete connections[newState.guild.name];
             reassignConnections();
-          }, 12000);
+          }, duration);
 
         }, introState.dispatcher ? 2000 : 0);
 
@@ -138,7 +138,7 @@ client.on('message', msg => {
         if (messageArray.length === 3) {
           ytdl.getInfo(messageArray[2]).then((info) => {
             if (info.player_response && info.player_response.playabilityStatus && info.player_response.playabilityStatus.status) {
-              save_url(pool, msg.author.id + '', messageArray[2]).then(c=>{
+              save_url(pool, msg.author.id + '', messageArray[2], messageArray[3] || 12).then(c=>{
                 msg.channel.send(c);
               });
             } else {
