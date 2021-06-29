@@ -11,7 +11,7 @@ module.exports = async (pool, uid, url, duration = 10) => {
       const insert = await pool.query('insert into users values($1,$2,$3);', [uid, url, duration]);
       return 'Saved you and your new URL 🎊.';
     } else if (check.rowCount === 1) {
-      const insert = await pool.query('update users set url=$2 duration=$3 where uid=$1;', [uid, url, duration]);
+      const insert = await pool.query('update users set url=$2, duration=$3 where uid=$1;', [uid, url, duration]);
       return 'Saved your new URL 🎊.';
     }
     // console.log(check.rows);
