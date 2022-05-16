@@ -128,7 +128,7 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
 });
 
 // CARD OF THE DAY
-cron.schedule("52 22 * * *", function() {
+cron.schedule("0 20 * * *", function() {
   console.log("Running card of the day.");
   const channel = client.channels.cache.find(channel => channel.name === "op-af");
   cardOfTheDay(channel);
