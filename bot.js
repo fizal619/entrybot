@@ -3,6 +3,7 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 const ytdl = require('ytdl-core');
 const { Pool } = require('pg');
+const cron = require('node-cron');
 
 const connectionString = process.env.DB_URL;
 
@@ -14,6 +15,7 @@ const save_url = require('./routes/save_url'),
       kookie = require('./routes/kookie'),
       spongebob = require('./routes/spongebob'),
       animeSearch = require('./routes/animeSearch'),
+      cardOfTheDay = require('./routes/cardOfTheDay'),
       duel = require('./routes/duel');
       // play = require('./routes/play');
 
@@ -125,6 +127,14 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
 
 });
 
+// CARD OF THE DAY
+cron.schedule("52 22 * * *", function() {
+  console.log("Running card of the day.");
+  const channel = client.channels.cache.find(channel => channel.name === "op-af");
+  cardOfTheDay(channel);
+},{
+  timezone: "America/New_York"
+});
 
 // MESSAGE HANDLERS
 
@@ -196,6 +206,11 @@ client.on('message', msg => {
         duel(messageArray[2]).then(c => {
           msg.channel.send(c);
         });
+        break;
+
+      case 'randcard':
+        msg.channel.send("Hacking konami... 🃏");
+        cardOfTheDay(msg.channel);
         break;
 
       default:
