@@ -4,6 +4,7 @@ const client = new Discord.Client();
 const ytdl = require('ytdl-core');
 const { Pool } = require('pg');
 const cron = require('node-cron');
+const readableSeconds = require("readable-seconds");
 
 const connectionString = process.env.DB_URL;
 
