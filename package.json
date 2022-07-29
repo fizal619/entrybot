@@ -24,6 +24,7 @@
     "node-cron": "^3.0.0",
     "pg": "^7.8.0",
     "puppeteer": "^8.0.0",
+    "readable-seconds": "^1.2.0",
     "request": "^2.88.0",
     "ytdl-core": "4.8.3"
   },

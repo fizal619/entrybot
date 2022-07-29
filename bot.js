@@ -192,6 +192,12 @@ client.on('message', msg => {
         kookie(msg.channel);
       break;
 
+      case 'uptime':
+        msg.channel.send(
+          readableSeconds(Math.ceil(process.uptime()))
+        );
+        break;
+
       case 'say':
         let textArr = messageArray.concat([]);
         textArr.shift();
