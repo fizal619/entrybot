@@ -85,19 +85,22 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
             dlChunkSize: 0
           });
           introState.dispatcher = introState.connection.play(YTSTREAM, { volume: 0.1 });
-          setTimeout(()=>{
-            YTSTREAM.destroy();
-          }, duration);
+
           clearTimeout(introState.timeoutID);
 
-          introState.timeoutID = setTimeout(()=> {
-            introState.connection.disconnect();
-            // connections[newState.guild.name].connection.disconnect();
-            connections[newState.guild.name] = null;
-            introState = null;
-            delete connections[newState.guild.name];
-            reassignConnections();
-          }, duration);
+          // only start the countdown to disconnect when the video successfully loads
+          YTSTREAM.on("response", p => {
+            console.log("Start stream")
+            introState.timeoutID = setTimeout(()=> {
+              introState.connection.disconnect();
+              // connections[newState.guild.name].connection.disconnect();
+              connections[newState.guild.name] = null;
+              introState = null;
+              delete connections[newState.guild.name];
+              reassignConnections();
+            }, duration);
+          });
+
 
         }, introState.dispatcher ? 2000 : 0);
 
