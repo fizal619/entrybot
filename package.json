@@ -13,12 +13,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@discordjs/opus": "^0.8.0",
     "@discordjs/voice": "^0.11.0",
     "axios": "^0.21.1",
+    "bufferutil": "^4.0.6",
     "concurrently": "^5.3.0",
     "discord.js": "^14.2.0",
     "dotenv": "^6.2.0",
+    "erlpack": "github:discord/erlpack",
     "express": "^4.16.4",
     "ffmpeg-static": "^5.0.2",
     "google-tts-api": "2.0.2",
@@ -28,7 +29,8 @@
     "play-dl": "^1.9.5",
     "puppeteer": "^8.0.0",
     "readable-seconds": "^1.2.0",
-    "request": "^2.88.0"
+    "request": "^2.88.0",
+    "utf-8-validate": "^5.0.9"
   },
   "devDependencies": {
     "jest": "^24.5.0"

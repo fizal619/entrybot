@@ -1,5 +1,5 @@
-FROM node:12-alpine3.10
-RUN apk --no-cache --virtual build-dependencies add python3 make g++ ffmpeg chromium
+FROM node:14-alpine3.10
+RUN apk --no-cache --virtual build-dependencies add python3 make g++ chromium
 RUN rm -rf /var/cache/apk/*
 ENV NODE_ENV production
 

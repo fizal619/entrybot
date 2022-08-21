@@ -14,7 +14,8 @@ const client = new Discord.Client({
   intents: [
     Discord.GatewayIntentBits.Guilds,
     Discord.GatewayIntentBits.GuildVoiceStates,
-    Discord.GatewayIntentBits.GuildMessages
+    Discord.GatewayIntentBits.GuildMessages,
+    Discord.GatewayIntentBits.MessageContent
   ]
 });
 
@@ -24,7 +25,7 @@ const { Pool } = require('pg');
 const connectionString = process.env.DB_URL;
 
 const pool = new Pool({ connectionString: connectionString });
-const save_url = require('./routes/save_url'),
+const save = require('./routes/save'),
       show_url = require('./routes/show_url'),
       clear_url = require('./routes/clear_url'),
       say = require('./routes/say'),
@@ -34,12 +35,30 @@ const save_url = require('./routes/save_url'),
       cardOfTheDay = require('./routes/cardOfTheDay'),
       duel = require('./routes/duel');
       // play = require('./routes/play');
+const fns = {
+  save
+}
+
+const CMD = process.env.NODE_ENV == "production" ? "+entry" : "+test";
 
 client.once('ready', () => {
-  console.log('Bot Ready!');
+  console.log('Bot Ready!', CMD);
 });
 
 client.login(process.env.DISCORD_TOKEN);
+
+// MESSAGE STUFF
+client.on("messageCreate", async (message) => {
+  const msgArr = message.content.split(" ");
+  // console.log(msgArr);
+  if (msgArr[0] != CMD) return;
+  msgArr.shift();
+  const func = msgArr.shift();
+  console.log(func, msgArr);
+  const res = await fns[func]
+    ?.({pool, client, message, msgArr});
+  message.reply(res);
+});
 
 // VOICE STUFF
 
@@ -59,7 +78,7 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
   if (oldState.channel && !newState.channel) return;
 
   // for dev mode
-  if (newState.channel.name != "entrybot-development") return;
+  // if (newState.channel.name != "entrybot-development" ) return;
 
   if (connections[newState.guild.id]?.connection) return;
 
