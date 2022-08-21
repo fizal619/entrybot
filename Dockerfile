@@ -1,4 +1,4 @@
-FROM node:16-alpine3.10
+FROM node:16-alpine
 RUN apk --no-cache --virtual build-dependencies add python3 make g++ chromium
 RUN rm -rf /var/cache/apk/*
 ENV NODE_ENV production
