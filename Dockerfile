@@ -8,6 +8,7 @@ WORKDIR /app
 COPY ./package.json /app/package.json
 COPY ./package-lock.json /app/package-lock.json
 RUN JOBS=max npm install
+RUN npm update -g
 
 COPY . /app
 RUN touch /app/.env
