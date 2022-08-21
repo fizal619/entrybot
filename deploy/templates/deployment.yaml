@@ -42,6 +42,8 @@ spec:
               value: "{{ .Values.NEXUS_PW }}"
             - name: PORT
               value: "{{ .Values.service.port }}"
+            - name: NODE_ENV
+              value: "production"
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
