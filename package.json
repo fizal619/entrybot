@@ -13,20 +13,22 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@discordjs/opus": "^0.3.2",
+    "@discordjs/opus": "^0.8.0",
+    "@discordjs/voice": "^0.11.0",
     "axios": "^0.21.1",
     "concurrently": "^5.3.0",
-    "discord.js": "12.5.3",
+    "discord.js": "^14.2.0",
     "dotenv": "^6.2.0",
     "express": "^4.16.4",
-    "fluent-ffmpeg": "^2.1.2",
+    "ffmpeg-static": "^5.0.2",
     "google-tts-api": "2.0.2",
+    "libsodium-wrappers": "^0.7.10",
     "node-cron": "^3.0.0",
-    "pg": "^7.8.0",
+    "pg": "^8.3.0",
+    "play-dl": "^1.9.5",
     "puppeteer": "^8.0.0",
     "readable-seconds": "^1.2.0",
-    "request": "^2.88.0",
-    "ytdl-core": "^4.11.0"
+    "request": "^2.88.0"
   },
   "devDependencies": {
     "jest": "^24.5.0"
