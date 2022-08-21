@@ -1,5 +1,6 @@
 FROM node:16-alpine
-RUN apk --no-cache --virtual build-dependencies add python3 make g++ chromium
+RUN apk --no-cache --virtual build-dependencies add python3 make g++
+RUN apk add --no-cache  chromium --repository=http://dl-cdn.alpinelinux.org/alpine/v3.10/main
 RUN rm -rf /var/cache/apk/*
 ENV NODE_ENV production
 
