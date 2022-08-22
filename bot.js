@@ -41,11 +41,18 @@ const fns = {
 
 const CMD = process.env.NODE_ENV == "production" ? "+entry" : "+test";
 
+let retryFlag = true;
+
 client.once('ready', () => {
+  retryFlag = false;
   console.log('Bot Ready!', CMD);
 });
 
-client.login(process.env.DISCORD_TOKEN);
+while (retryFlag) {
+  client.login(process.env.DISCORD_TOKEN)
+    .catch(err => console.log(err))
+}
+
 
 // MESSAGE STUFF
 client.on("messageCreate", async (message) => {
