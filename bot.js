@@ -26,14 +26,14 @@ const connectionString = process.env.DB_URL;
 
 const pool = new Pool({ connectionString: connectionString });
 const save = require('./routes/save'),
-      show_url = require('./routes/show_url'),
-      clear_url = require('./routes/clear_url'),
-      say = require('./routes/say'),
-      kookie = require('./routes/kookie'),
-      spongebob = require('./routes/spongebob'),
-      animeSearch = require('./routes/animeSearch'),
-      cardOfTheDay = require('./routes/cardOfTheDay'),
-      duel = require('./routes/duel');
+      // show_url = require('./routes/show_url'),
+      // clear_url = require('./routes/clear_url'),
+      // say = require('./routes/say'),
+      // kookie = require('./routes/kookie'),
+      // spongebob = require('./routes/spongebob'),
+      // animeSearch = require('./routes/animeSearch'),
+      // cardOfTheDay = require('./routes/cardOfTheDay'),
+      // duel = require('./routes/duel');
       // play = require('./routes/play');
 const fns = {
   save
