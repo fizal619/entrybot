@@ -25,7 +25,7 @@ const { Pool } = require('pg');
 const connectionString = process.env.DB_URL;
 
 const pool = new Pool({ connectionString: connectionString });
-const save = require('./routes/save'),
+const save = require('./routes/save')
       // show_url = require('./routes/show_url'),
       // clear_url = require('./routes/clear_url'),
       // say = require('./routes/say'),
