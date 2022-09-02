@@ -80,9 +80,9 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
   // stop function if the bot joins a channel
   if (newState.member.user.id == client.user.id) return;
   // stop the bot if someone is leaving
-  if (oldState.voiceChannel && !newState.voiceChannel) return;
+  if (oldState.channel && !newState.channel) return;
   // stop the bot if voicestate changes but the user did not disconnect
-  if (oldState.voiceChannel && newState.voiceChannel) return;
+  if (oldState.channel && newState.channel) return;
 
   // for dev mode
   // if (newState.channel.name != "entrybot-development" ) return;
