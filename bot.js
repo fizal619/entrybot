@@ -25,8 +25,8 @@ const { Pool } = require('pg');
 const connectionString = process.env.DB_URL;
 
 const pool = new Pool({ connectionString: connectionString });
-const save = require('./routes/save');
-      // show_url = require('./routes/show_url'),
+const save = require('./routes/save'),
+      show = require('./routes/show_url');
       // clear_url = require('./routes/clear_url'),
       // say = require('./routes/say'),
       // kookie = require('./routes/kookie'),
@@ -36,7 +36,8 @@ const save = require('./routes/save');
       // duel = require('./routes/duel');
       // play = require('./routes/play');
 const fns = {
-  save
+  save,
+  show
 }
 
 const CMD = process.env.NODE_ENV == "production" ? "+entry" : "+test";
@@ -78,8 +79,10 @@ const connections = {
 client.on("voiceStateUpdate", async (oldState, newState) => {
   // stop function if the bot joins a channel
   if (newState.member.user.id == client.user.id) return;
-  // stop the bot if this is not someone joining a voice channel for the first time
-  if (oldState.channel && !newState.channel) return;
+  // stop the bot if someone is leaving
+  if (oldState.voiceChannel && !newState.voiceChannel) return;
+  // stop the bot if voicestate changes but the user did not disconnect
+  if (oldState.voiceChannel && newState.voiceChannel) return;
 
   // for dev mode
   // if (newState.channel.name != "entrybot-development" ) return;
