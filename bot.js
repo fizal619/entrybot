@@ -62,7 +62,11 @@ client.on("messageCreate", async (message) => {
   console.log(func, msgArr);
   const res = await fns[func]
     ?.({pool, client, message, msgArr});
-  message.reply(res);
+  if (res) {
+    message.reply(res);
+  } else {
+    message.reply(`Sorry dunno that, I know ${Object.keys(fns)} though.`)
+  }
 });
 
 // VOICE STUFF
