@@ -2,10 +2,8 @@ require('dotenv').config();
 const Discord = require('discord.js');
 const {
   joinVoiceChannel,
-  getVoiceConnection,
   createAudioPlayer,
   createAudioResource,
-  StreamType,
   NoSubscriberBehavior,
   AudioPlayerStatus
 } = require('@discordjs/voice');
@@ -26,9 +24,9 @@ const connectionString = process.env.DB_URL;
 
 const pool = new Pool({ connectionString: connectionString });
 const save = require('./routes/save'),
-      show = require('./routes/show_url');
+      show = require('./routes/show_url'),
+      say = require('./routes/say');
       // clear_url = require('./routes/clear_url'),
-      // say = require('./routes/say'),
       // kookie = require('./routes/kookie'),
       // spongebob = require('./routes/spongebob'),
       // animeSearch = require('./routes/animeSearch'),
@@ -37,6 +35,7 @@ const save = require('./routes/save'),
       // play = require('./routes/play');
 const fns = {
   save,
+  say,
   show
 }
 
@@ -62,10 +61,12 @@ client.on("messageCreate", async (message) => {
   console.log(func, msgArr);
   const res = await fns[func]
     ?.({pool, client, message, msgArr});
-  if (res) {
+  if (res && res !== "noreply") {
     message.reply(res);
+  } else if (res == "noreply") {
+    console.log(">> tts no reply");
   } else {
-    message.reply(`Sorry dunno that, I know ${Object.keys(fns)} though.`)
+    message.reply(`Sorry dunno that, I know [${Object.keys(fns).join("|")}] though.`)
   }
 });
 
