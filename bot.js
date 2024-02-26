@@ -1,4 +1,5 @@
 require('dotenv').config();
+const { exec } = require("child_process");
 const Discord = require('discord.js');
 const {
   joinVoiceChannel,
@@ -24,15 +25,15 @@ const connectionString = process.env.DB_URL;
 
 const pool = new Pool({ connectionString: connectionString });
 const save = require('./routes/save'),
-      show = require('./routes/show_url'),
-      say = require('./routes/say');
-      // clear_url = require('./routes/clear_url'),
-      // kookie = require('./routes/kookie'),
-      // spongebob = require('./routes/spongebob'),
-      // animeSearch = require('./routes/animeSearch'),
-      // cardOfTheDay = require('./routes/cardOfTheDay'),
-      // duel = require('./routes/duel');
-      // play = require('./routes/play');
+  show = require('./routes/show_url'),
+  say = require('./routes/say');
+// clear_url = require('./routes/clear_url'),
+// kookie = require('./routes/kookie'),
+// spongebob = require('./routes/spongebob'),
+// animeSearch = require('./routes/animeSearch'),
+// cardOfTheDay = require('./routes/cardOfTheDay'),
+// duel = require('./routes/duel');
+// play = require('./routes/play');
 const fns = {
   save,
   say,
@@ -42,13 +43,11 @@ const fns = {
 const CMD = process.env.NODE_ENV == "production" ? "+entry" : "+test";
 
 client.once('ready', () => {
-  retryFlag = false;
   console.log('Bot Ready!', CMD);
 });
 
-setTimeout(() => {
-  client.login(process.env.DISCORD_TOKEN);
-}, 10000)
+client.login(process.env.DISCORD_TOKEN)
+  .catch(e => exec("kill 1"));
 
 
 // MESSAGE STUFF
@@ -60,7 +59,7 @@ client.on("messageCreate", async (message) => {
   const func = msgArr.shift();
   console.log(func, msgArr);
   const res = await fns[func]
-    ?.({pool, client, message, msgArr});
+    ?.({ pool, client, message, msgArr });
   if (res && res !== "noreply") {
     message.reply(res);
   } else if (res == "noreply") {
@@ -104,7 +103,7 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
 
   console.log("Setting up stream...");
   console.time("stream setup");
-  let stream = await play.stream(res.rows[0]?.url,{
+  let stream = await play.stream(res.rows[0]?.url, {
     quality: 0,
     discordPlayerCompatibility: true
   });
@@ -135,8 +134,8 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
 
   player.play(resource);
 
-  player.on(AudioPlayerStatus.Playing, ()=> {
-    connections[newState.guild.id]["timeout"] = setTimeout(()=>{
+  player.on(AudioPlayerStatus.Playing, () => {
+    connections[newState.guild.id]["timeout"] = setTimeout(() => {
       connections[newState.guild.id].player.stop();
       connections[newState.guild.id].connection.destroy();
       delete connections[newState.guild.id];
